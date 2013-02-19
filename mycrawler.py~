@@ -52,7 +52,7 @@ for i in range(10):
       browse(dict[x])
 
 for x in brokenUrls.keys():
-	fo.write(brokenUrls[x].parentUrl + "   :   "+ x)
+	fo.write(brokenUrls[x].parentUrl + "   :   "+ x +"\n")
 
 f.close()
 fo.close()

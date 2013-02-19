@@ -1,47 +1,58 @@
 from pattern.web import URL,DOM
+from crawlerclass import link
 import re,os,sys
 
 
 def generateUrl(root ,baseurl, href):
   if re.search(r'^/',href):
 	return root+href
-  if href.startswith("http://"):
+  if href.startswith("http://") or href.startswith("www."):
 	return ""  
   s = baseurl.split('/')
   s = baseurl.replace("/"+s.pop(),"/")
   return s+"href"
 
 dict = {}
+brokenUrls = {}
+visited = {}
 
 rootUrl = 'http://winzip.com/win/en/index.htm'
 baseUrl = 'http://winzip.com'
-dict[rootUrl] = 0
+dict[rootUrl] = link(baseUrl,0, rootUrl)
 
 f = open("links.txt","w")
 fo = open("brokenLinks.txt","w")
-def browse(browseUrl):
+def browse(browseUrlObject):
+    browseUrl = browseUrlObject.url
     try:
 	 url = URL(browseUrl)
 	 dom = DOM(url.download())
+	 visited[browseUrl] = 1 
 	 try:
 	   for anchor in dom.by_tag('a'):
 	  	 url = generateUrl(baseUrl,browseUrl,anchor.href)
 	         if url != "":  
 		   try:
-		    dict[url] = dict[url]+1
+		    dict[url].count = dict[url].count +1
 		   except:
-		    f.write(browseUrl+ " : " + anchor.href +" : "+ url+"\n")
-		    dict[url] = 0
+		    f.write(url+"\n")
+		    dict[url] = link(browseUrl,0,url)
 	 except:
 	     pass
     except:
-	fo.write(browseUrl+"\n")
+    	print browseUrlObject
+	brokenUrls[browseUrl] = browseUrlObject
 	pass
 
-for i in range(2): 
+for i in range(10): 
   for x in dict.keys():
-    if dict[x] != 2:
-      browse(x)
+    try:
+      visited[x]
+    except:
+      browse(dict[x])
+
+for x in brokenUrls.keys():
+	fo.write(brokenUrls[x].parentUrl + "   :   "+ x +"\n")
 
 f.close()
 fo.close()
