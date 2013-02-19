@@ -2,7 +2,6 @@ from pattern.web import URL,DOM
 from crawlerclass import link
 import re,os,sys
 
-
 def generateUrl(root ,baseurl, href):
   if re.search(r'^/',href):
 	return root+href
@@ -57,7 +56,7 @@ for x in brokenUrls.keys():
 	fo.write(brokenUrls[x].parentUrl + "   :   "+ x +"\n")
 
 for x in dict.keys():
-	fo.write(x+"\n")
+	f.write(x+"\n")
 
 f.close()
 fo.close()

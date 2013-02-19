@@ -2,7 +2,6 @@ from pattern.web import URL,DOM
 from crawlerclass import link
 import re,os,sys
 
-
 def generateUrl(root ,baseurl, href):
   if re.search(r'^/',href):
 	return root+href
