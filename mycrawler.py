@@ -20,8 +20,6 @@ rootUrl = 'http://winzip.com/win/en/index.htm'
 baseUrl = 'http://winzip.com'
 dict[rootUrl] = link(baseUrl,0, rootUrl)
 
-f = open("links.txt","w")
-fo = open("brokenLinks.txt","w")
 def browse(browseUrlObject):
     browseUrl = browseUrlObject.url
     try:
@@ -35,11 +33,11 @@ def browse(browseUrlObject):
 		   try:
 		    dict[url].count = dict[url].count +1
 		   except:
-		    f.write(url+"\n")
 		    dict[url] = link(browseUrl,0,url)
 	 except:
 	     pass
     except:
+    	del dict[browseUrl]
     	print browseUrlObject
 	brokenUrls[browseUrl] = browseUrlObject
 	pass
@@ -51,8 +49,15 @@ for i in range(10):
     except:
       browse(dict[x])
 
+f = open("links.txt","w")
+fo = open("brokenLinks.txt","w")
+
+
 for x in brokenUrls.keys():
 	fo.write(brokenUrls[x].parentUrl + "   :   "+ x +"\n")
+
+for x in dict.keys():
+	f.write(x+"\n")
 
 f.close()
 fo.close()
