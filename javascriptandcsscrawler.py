@@ -25,9 +25,9 @@ for browseUrl in f:
    print browseUrl
    print "=================================================="
    url = URL(browseUrl)
-   dom = DOM(url.download())
+   mainDom = DOM(url.download())
    try:
-     for anchor in dom.by_tag('link'):
+     for anchor in mainDom.by_tag('link'):
       url = generateUrl(rootUrl, baseUrl, anchor.href)
       try:
 	dict[url] = dict[url]+1
@@ -42,9 +42,14 @@ for browseUrl in f:
 	 fb.write(url+" : Page-> "+browseUrl+"\n")
    except:
      pass
+   
    try:
-     for anchor in dom.by_tag('script'):
-      url = generateUrl(rootUrl, baseUrl, anchor.src)
+     allUrl = []
+     for anchor in mainDom.by_tag('script'):
+      allUrl = allUrl+re.findall('<script.*src="(.*\.js)"></script>',anchor.html)
+     for anchor in allUrl:
+      url = generateUrl(rootUrl, baseUrl, anchor)
+      print url
       try:
 	dict[url] = dict[url]+1
       except:
